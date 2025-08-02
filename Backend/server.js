@@ -1,10 +1,13 @@
 //importing the Express framework into your project.
+// Importing body-parser middleware to handle JSON request bodies
 import express from 'express';
 import bodyParser from 'body-parser';
 
 //this creates web server
 let app = express();
 
+// Middleware to parse incoming JSON requests
+// This allows your server to read and understand JSON data sent in the request body
 app.use(bodyParser.json());
 
 // Starting the server and making it listen on port 3001
