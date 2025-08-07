@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";//import bcrypt
 
 const userSchema = mongoose.Schema(
     {
@@ -57,6 +58,21 @@ userSchema.pre("save", async function(next){
         next(err);//pass error
     }
 });
+
+//Genarate JWT token
+
+userSchema.methods.genarateAuthToken = function(){
+    const token = jwt.sign(
+        {
+            _id : this.id,
+            role : this.role
+        },process.env.KEY,
+        {
+            expiresIn : process.env.EXPIRES_IN
+        }
+    );
+    return token;
+};
 
 const User = mongoose.model("Users",userSchema);
 
