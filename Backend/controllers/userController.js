@@ -49,6 +49,7 @@ export async function loginUser(req,res,next){
     try{
         const{ email, password} = req.body;
 
+        //Validate input fields
         if(!email || !password){
             return res.status(400).json({
                 error : "Missing credentials",
@@ -56,6 +57,7 @@ export async function loginUser(req,res,next){
             })
         }
 
+        //find the user
         const user = await User.findOne({email});
         if(!user){
             return res.status(404).json({
@@ -63,6 +65,7 @@ export async function loginUser(req,res,next){
                 message : "Invalid email or password"
             })
         }
+        //compare passwords
         const isMatch = await bcrypt.compare(password,user.password);
 
         if(!isMatch){
@@ -71,8 +74,10 @@ export async function loginUser(req,res,next){
                 message : "Email or password is incorrect"
             })
         }else{
+            //genarate jwt tokens
             const token = user.generateAuthToken();
 
+            //send response
             return res.status(200).json({
                 success : true,
                 message : "Login successful",
