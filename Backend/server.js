@@ -11,7 +11,7 @@ import dotenv from "dotenv";
 dotenv.config()
 
 //this creates web server
-let app = express();
+const app = express();
 
 // Middleware to parse incoming JSON requests
 // This allows your server to read and understand JSON data sent in the request body

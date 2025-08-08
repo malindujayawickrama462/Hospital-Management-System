@@ -1,4 +1,5 @@
-import User from "../models/User.js"
+import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 //function to check if the user with the given email already exits
 const checkExtingUser = async(email)=>{
@@ -36,10 +37,56 @@ export async function SignUp(req,res,next) {
         })
         return res.status(201).json({
             success : true,
-            message : "üser created successfully"
+            message : " User created successfully",
+            data : newUser
         })
 
     }catch(err){
        next(err);//pass the error to the error handling miidleware
+    }
+}
+export async function loginUser(req,res,next){
+    try{
+        const{ email, password} = req.body;
+
+        if(!email || !password){
+            return res.status(400).json({
+                error : "Missing credentials",
+                message : "Email and passsword are required"
+            })
+        }
+
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(404).json({
+                error : "User not found",
+                message : "Invalid email or password"
+            })
+        }
+        const isMatch = await bcrypt.compare(password,user.password);
+
+        if(!isMatch){
+            return res.status(401).json({
+                error : "Invalid credintials",
+                message : "Email or password is incorrect"
+            })
+        }else{
+            const token = user.generateAuthToken();
+
+            return res.status(200).json({
+                success : true,
+                message : "Login successful",
+                token,
+                user : {
+                      id: user._id,
+                      email: user.email,
+                      firstName: user.firstName,
+                      lastName: user.lastName,
+                      role: user.role
+                }
+            })
+        }
+    } catch (err){
+        next(err);
     }
 }

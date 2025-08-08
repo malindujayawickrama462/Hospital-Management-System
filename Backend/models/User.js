@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";//import bcrypt
+import jwt from "jsonwebtoken";//import jwt
 
 const userSchema = mongoose.Schema(
     {
@@ -50,7 +51,7 @@ userSchema.pre("save", async function(next){
         return next();
     }
     try{
-        const salt = await bcrypt.gensalt(10);//genarate salt
+        const salt = await bcrypt.genSalt(10);//genarate salt
         const hashedPassword = await bcrypt.hash(this.password, salt);//hash the password
         this.password = hashedPassword;//replace plain password
         next();
@@ -61,10 +62,13 @@ userSchema.pre("save", async function(next){
 
 //Genarate JWT token
 
-userSchema.methods.genarateAuthToken = function(){
+userSchema.methods.generateAuthToken = function(){
     const token = jwt.sign(
         {
             _id : this.id,
+            email : this.email,
+            firstName : this.firstName,
+            lastName : this.lastName,
             role : this.role
         },process.env.KEY,
         {
