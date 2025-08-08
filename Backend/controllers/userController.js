@@ -10,7 +10,7 @@ const checkExtingUser = async(email)=>{
 //Signup function for user registration
 export async function SignUp(req,res,next) {
     try{
-        req.body
+        const { firstName, lastName, email, password } = req.body;
 
         //validate required fields
         if(!firstName || !lastName || !email || !password){
@@ -20,7 +20,7 @@ export async function SignUp(req,res,next) {
             });
         }
         //check if the user with the same email already exits
-        const exitingUser = new checkExtingUser(email);
+        const exitingUser = await checkExtingUser(email);
         if(exitingUser){
             return res.status(400).json({
                 error : "user already exits",
