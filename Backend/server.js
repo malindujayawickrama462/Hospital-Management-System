@@ -2,10 +2,12 @@
 // Importing body-parser middleware to handle JSON request bodies
 //import ODM library to interact with mongodb
 //import dtenv to store sensitive data
+//import userRoutes
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
+import userRouter from './routes/userRoutes.js';
 
 //load environment variables
 dotenv.config()
@@ -23,6 +25,8 @@ mongoose.connect(process.env.MONGO_URI).then(()=>{
 }).catch(()=>{
     console.log("connection failed")
 })
+
+app.use("/users",userRouter)
 
 // Starting the server and making it listen on port 3001
 // Once the server is running, it will log a message to the console
